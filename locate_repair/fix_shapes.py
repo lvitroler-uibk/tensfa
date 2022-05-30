@@ -302,11 +302,10 @@ class ShapeFixer:
                                               lineno_varname=visitor.lineno_varname)
         with collect_shapes.collect():
             try:
-                module = importlib.import_module(f'{SFDATA}.StackOverflow.{file_name}')
+                module = importlib.import_module(f'{SFDATA}.{data_source}.{file_name}')
                 if hasattr(module, 'main'):
                     module.main()
             except Exception as e:
-                traceback.print_tb(e.__traceback__)
                 s = str(e)
                 et, ev, tb = sys.exc_info()
                 te = traceback.TracebackException(et, ev, tb)
@@ -471,4 +470,4 @@ if __name__ == '__main__':
     question_ids = pd.read_excel(os.path.dirname(os.path.realpath(__file__))+f'/../{SFDATA}/{data_source}.xlsx')['question id']
     for qi in tqdm(question_ids):
         shapeFixer = ShapeFixer(data_dir)
-        shapeFixer.fix_shape_incompatibility(qi, 5)
+        shapeFixer.fix_shape_incompatibility(qi, 1)
