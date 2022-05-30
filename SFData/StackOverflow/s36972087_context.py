@@ -1,5 +1,7 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
+
+tf.disable_v2_behavior()
 
 train_images = np.array(np.random.random((10, 19)), dtype=np.float32)
 train_labels = np.random.randint(0, 2, 10, dtype=np.int32)

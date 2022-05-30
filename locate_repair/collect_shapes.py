@@ -66,6 +66,9 @@ def _trace_dispatch(frame, event, arg):
         return
     code = frame.f_code
     filename = _filter_filename(code.co_filename)
+
+    if filename != None and '.py' in filename:
+        filename = filename.rsplit('/',1)[1]
     if filename not in _filenames:
         return
 

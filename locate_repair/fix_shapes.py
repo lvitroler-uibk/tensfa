@@ -17,6 +17,8 @@ from utils import resolve_shape, split_dict_string, split_tuple_or_list_string
 sys.path.append('../')
 from detect.predict import predict
 
+SFDATA = 'SFData'
+
 class ShapeFixer:
     
     def __init__(self, data_dir):
@@ -296,14 +298,15 @@ class ShapeFixer:
     
         except_lineno = -1
         shape_error = False
-        collect_shapes.init_shapes_collection(filenames=[f'{self.data_dir}\\{file_name}.py'],
+        collect_shapes.init_shapes_collection(filenames=[f'{file_name}.py'],
                                               lineno_varname=visitor.lineno_varname)
         with collect_shapes.collect():
             try:
-                module = importlib.import_module(f'{file_name}')
+                module = importlib.import_module(f'{SFDATA}.StackOverflow.{file_name}')
                 if hasattr(module, 'main'):
                     module.main()
             except Exception as e:
+                traceback.print_tb(e.__traceback__)
                 s = str(e)
                 et, ev, tb = sys.exc_info()
                 te = traceback.TracebackException(et, ev, tb)
@@ -463,9 +466,9 @@ class ShapeFixer:
 
 if __name__ == '__main__':
     data_source = sys.argv[1] # StackOverflow or ICSE2020ToRepair
-    data_dir = os.path.dirname(os.path.realpath(__file__))+f'/../SFData/{data_source}'
+    data_dir = os.path.dirname(os.path.realpath(__file__))+f'/../{SFDATA}/{data_source}'
     sys.path.append(data_dir)
-    question_ids = pd.read_excel(os.path.dirname(os.path.realpath(__file__))+f'/../SFData/{data_source}.xlsx')['question id']
+    question_ids = pd.read_excel(os.path.dirname(os.path.realpath(__file__))+f'/../{SFDATA}/{data_source}.xlsx')['question id']
     for qi in tqdm(question_ids):
         shapeFixer = ShapeFixer(data_dir)
         shapeFixer.fix_shape_incompatibility(qi, 5)
